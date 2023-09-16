@@ -87,8 +87,7 @@ class AtomWithStamp(Atom):
         except AttributeError:
             pass
         options = webdriver.ChromeOptions()
-        # Звук вырубать НЕ НАДО, ХУЖЕ БУДЕТ, УЖ ПОВЕРЬ
-        # А нет, будет только лучше...
+        # Выключаем звук
         options.add_argument("--mute-audio")
         options.add_argument("--incognito")
         # Проверяем, надо ли убирать окно

@@ -38,6 +38,10 @@ class User(Atom):
         self.executer.headers["Authorization"] = f"Bearer {self.data['access_token']}"
 
     def __get_modules(self):
+        """
+        Функция получения списка модулей.
+        Используется во внутренних процессах.
+        """
         data = self.executer.execute_request("getModules", data={"timestamp": self.timestamp}).json()
         links = data["links"]
         for mod in data["data"]:
@@ -46,22 +50,47 @@ class User(Atom):
             yield mod
 
     def get_modules(self, generator: bool = False):
+        """
+        Получение списка модулей.
+
+        :param generator: Предоставить ли ответ в виде итератора?
+        :return: Список или итератор.
+        """
         if generator:
             return self.__get_modules()
         return list(set(self.__get_modules()))
 
     def __get_active_modules(self):
+        """
+        Получения списка активных модулей.
+        Используется во внутренних процессах.
+        """
         for mod in self.get_modules(True):
             if mod.status != Status.ACTIVE:
                 break
             yield mod
 
     def get_active_modules(self, generator: bool = False):
+        """
+        Получение списка активных модулей.
+
+        :param generator: Предоставить ли ответ в виде итератора?
+        :return: Список или итератор.
+        """
         if generator:
             return self.__get_active_modules()
         return list(set(self.get_active_modules(True)))
 
     def __pages_iter(self, t, n, l):
+        """
+        Перебор страниц.
+        Используется во внутренних процессах.
+
+        :param t: Номер текущей страницы.
+        :param n: Номер первой страницы.
+        :param l: Номер последней страницы.
+        :return: Модули с этой страницы.
+        """
         while t != l:
             new = self.executer.get(n).json()
             for m in new["data"]:

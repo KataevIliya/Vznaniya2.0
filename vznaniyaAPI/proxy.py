@@ -20,15 +20,23 @@ def kill_proc_with_childs(pid: int):
     pr.terminate()
 
 
-# Короче, это не класс, а большооой косыль. Копайся сам. Тут строчек мало, но я уже хз что тут писал...
-# Я покопался, ничего не понял. Будущему мне удачи!
-# Я всё равно ничего не понимаю... надежда только на тебя, ещё более будущий я...
 class Proxy:
-    def __enter__(self, show=False):
-        self.process = Popen(f"{MITMWEB_COMMAND} --no-web-open-browser", shell=True, stdout=PIPE, text=True, stderr=PIPE)
+    """
+    Класс, поддерживающий работу mitm proxy
+    """
+    def __enter__(self):
+        """
+        Открытие Proxy через with.
+        """
+        # Запуск процесса
+        self.process = Popen(
+            f"{MITMWEB_COMMAND} --no-web-open-browser", shell=True, stdout=PIPE, text=True, stderr=PIPE
+        )
+        # Получаем используемые хост и порт из вывода.
         data_curl = self.process.stdout.readline()
         data = self.process.stdout.readline()
         host, port = data.split("//")[-1].split(":")
+        # Иногда mitm отображает "*" вместо "localhost".
         if host == "*":
             host = "localhost"
         # noinspection HttpUrlsUsage
@@ -38,6 +46,7 @@ class Proxy:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        # После закрытия with, убиваем процесс прокси сервера.
         kill_proc_with_childs(self.process.pid)
 
     def restart(self):

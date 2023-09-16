@@ -24,7 +24,7 @@ class SolveManager:
 
     def __init__(self, user: User, module: Module, proxy: Proxy, debug: bool = False):
         """
-        Короче, самая главная штука. Она управляет солверами и решает твои задания.
+        Класс, осуществляющий управление солверами и решение заданий.
 
         :param user: От имени какого пользователя будет осуществляться решение.
         :param module: Модуль, который будет решаться.
@@ -76,8 +76,7 @@ class SolveManager:
 
     def close(self):
         """
-        Взорвать нафиг этот штамп браузера!
-        За МОНОЛИИИТ!
+        Закрыть штамп браузера.
         """
         if self.stamp is None:
             return
@@ -120,7 +119,7 @@ class SolveManager:
             self.stamp = None
         self.debug("===========RUN SOLVER============")
         self.debug(f"Running solver {solver.__name__}")
-        # Ну, типа собираем
+        # Собираем
         sr = solver(
             proxy=self.proxy.proxy,
             dump_address=self.proxy.address,
@@ -128,7 +127,8 @@ class SolveManager:
             reuse_stamp=self.stamp,
             on_new_word=self.__debug_progress
         )
-        # Иницим юзера только если до этого у нас не был открыт штамп. Иначе он там уже зареган и грохгется всё к чертовой бабушке.
+        # Иницим юзера только если до этого у нас не был открыт штамп.
+        # Иначе он там уже зареган и грохгется всё к чертовой бабушке.
         if self.stamp is None:
             self.debug("Init user...      ", end="")
             sr.init_solver(self.user)
@@ -147,5 +147,4 @@ class SolveManager:
         #     self.debug("complete!")
         # Обновляем штамп
         self.stamp = sr.stamp
-        # Говорим оки-доки мы негры, мы всё решили.
         return True

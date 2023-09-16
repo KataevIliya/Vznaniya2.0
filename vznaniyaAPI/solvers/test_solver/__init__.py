@@ -18,7 +18,7 @@ class TestSolver(SolverBase):
     solver_name_in_config = "FINAL_TEST_XPATHS"
 
     def solve(self):
-        # Нам проси не нужён... шутка, нужен.
+        # Нам прокси не нужен... шутка, нужен.
         if self.proxy is None:
             raise ProxyNotFoundError
         # Тут как в ListenSolver
@@ -27,7 +27,7 @@ class TestSolver(SolverBase):
         self.wait_to_loading_elem(self.config.get("SERVICE_XPATHS", "mitmproxy_search"))
         self.stamp.find_element(By.XPATH, self.config.get("SERVICE_XPATHS", "mitmproxy_search")).send_keys(".mp3")
         self.go_to_tab(0)
-        # Дефолтное открытие страницы (но тут костыль, разбирайся сам)
+        # Дефолтное открытие страницы (но тут маленький костыль, сравни с SolverBase)
         self.stamp.get(self.config.get("APP_URLS", self.solver_name).format(id=self.id, group_id=self.group_id))
         self.wait_to_loading_elem(self.config.get("LISTEN_XPATHS", "process_bar"))
         self.wait_to_loading_elem(self.config.get("FINAL_TEST_XPATHS", "test_tab_button"))
@@ -65,13 +65,13 @@ class TestSolver(SolverBase):
             except NoSuchElementException:
                 pass
         self.compare(len(parts), len(parts))
-        # Этот слип тоже нужен. Перед тем, как его убрать, вспомни: "Лучше посрать и опоздать, чем успеть и обостраться".
+        # Этот слип тоже нужен.
         sleep(5)
 
-        # Хитро-мудрое завершение теста. Разобраться можно, но мне лень объяснять.
+        # Хитро-мудрое завершение теста.
+        # Так как взнания не очень адекватный сервис, тыкаем на кнопки, пока он не завершится.
         self.wait_to_loading_elem(self.config.get("FINAL_TEST_XPATHS", "submit1"))
         self.stamp.find_element(By.XPATH, self.config.get("FINAL_TEST_XPATHS", "submit1")).click()
-
         while True:
             try:
                 self.stamp.find_element(By.XPATH, self.config.get("FINAL_TEST_XPATHS", "submit2")).click()
@@ -82,7 +82,6 @@ class TestSolver(SolverBase):
                 except (NoSuchElementException, StaleElementReferenceException):
                     pass
 
-
     def get_requests_list(self):
         """
         Получение списка запросов
@@ -91,7 +90,6 @@ class TestSolver(SolverBase):
         """
         # Переходим на вкладку мониторинга.
         self.go_to_tab(1)
-        # Надо, Вася, НАДО
         sleep(.1)
         # И просто считываем все запросы
         requests = []

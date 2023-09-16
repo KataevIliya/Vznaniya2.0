@@ -20,7 +20,10 @@ class RequestExecuter:
 
     def execute_request(self, request_name: str, data: dict = None, headers: dict = None, section: str = "URL", **kwargs) -> requests.Response:
         """
-        Я этот кусок со StackOwerdflow стыбрил, как работает примерно понятно, но только примерно.
+        Выполняет запрос, описанный в конфиге, как
+            {метод},{адрес}
+        Например:
+            get,/hello/print
 
         :param request_name: Имя запроса в файле.
         :param data: Даннве запроса.
